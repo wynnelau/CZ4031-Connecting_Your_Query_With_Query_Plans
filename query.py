@@ -1,8 +1,11 @@
 import psycopg2
+import json
 from config import config
 import queries
 
-def connect():
+
+def getQueryPlan(query_number, disable_parameters=(), ):
+    output_json = {}
     """ Connect to the PostgreSQL database server """
     conn = None
     try:
@@ -15,15 +18,18 @@ def connect():
 
         # create a cursor
         cur = conn.cursor()
+        query = queries.getQuery(query_number)
+        query = "EXPLAIN (ANALYZE, FORMAT JSON) " + query
+        if query is None:
+            print("Please select a valid query number!")
+            return
 
-        # execute a statement
-        cur.execute(queries.q1())
-
-        # display the PostgreSQL database server version
-        db_version = cur.fetchone()
-        print(db_version)
-
-        # close the communication with the PostgreSQL
+        for param in disable_parameters:
+            query = "SET LOCAL enable_" + str(param) + "= off;" + query
+        print(query)
+        cur.execute(query)
+        rows = cur.fetchall()
+        output_json = json.dumps(rows)
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
@@ -32,7 +38,13 @@ def connect():
             conn.close()
             print('Database connection closed.')
 
+    return output_json
+
 
 if __name__ == '__main__':
-    connect()
+    x = getQueryPlan(19)
+    print(x)
+    disable1 = ("hashjoin", "mergejoin", "indexscan", "bitmapscan")
+    y = getQueryPlan(19, disable1)
+    print(y)
 

@@ -28,3 +28,24 @@ def q5():
 
 def q6():
     return "SELECT sum(l_extendedprice * l_discount) as revenue FROM lineitem WHERE l_shipdate >= date '1994-01-01' AND l_shipdate < date '1994-01-01' + interval '1' year AND l_discount between 0.06 - 0.01 AND 0.06 + 0.01 AND l_quantity < 24;"
+
+
+def getQuery(query_number):
+    if query_number == 1:
+        return q1()
+    elif query_number == 3:
+        return q3()
+    elif query_number == 5:
+        return q5()
+    elif query_number == 6:
+        return q6()
+    elif query_number == 10:
+        return q10()
+    elif query_number == 12:
+        return q12()
+    elif query_number == 14:
+        return q14()
+    elif query_number == 19:
+        return q19()
+    else:
+        return None

@@ -10,6 +10,10 @@ nodeListScans = []
 
 
 class Node(object):
+    def __repr__(self):
+        return f"Node({self.node_type}, {self.relation_name}, {self.schema}, {self.alias}, {self.group_key}, {self.sort_key}, {self.join_type}" \
+               f", {self.index_name},{self.hash_condition}, {self.table_filter}, {self.index_condition}, {self.merge_condition}" \
+               f", {self.recheck_condition}, {self.join_filter},{self.subplan_name}, {self.actual_rows}, {self.actual_time}, {self.description})"
 
     def __init__(self, node_type, relation_name, schema, alias, group_key, sort_key, join_type, index_name,
                  hash_condition, table_filter, index_condition, merge_condition, recheck_condition, join_filter,
@@ -35,6 +39,9 @@ class Node(object):
         self.children = []
 
 
+
+
+
 def get_query_plan(query_number, disable_parameters=(), ):
     output_json = {}
     """ Connect to the PostgreSQL database server """
@@ -57,7 +64,7 @@ def get_query_plan(query_number, disable_parameters=(), ):
 
         for param in disable_parameters:
             query = "SET LOCAL enable_" + str(param) + "= off;" + query
-        # print(query)
+        print(query)
         cur.execute(query)
         rows = cur.fetchall()
         output_json = json.dumps(rows)
@@ -156,7 +163,7 @@ def traverse_tree(node):
         traverse_tree(child)
 
 
-def get_qep_nodes(query_number, disable=None):
+def get_qep_nodes(query_number, disable=()):
     global nodeListOperations
     global nodeListScans
     qep_json = json.loads(get_query_plan(query_number,disable))

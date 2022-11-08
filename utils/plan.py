@@ -63,14 +63,6 @@ def get_query_plan(query_number, disable_parameters=(), ):
         # create a cursor
         cur = conn.cursor()
         query = queries.getQuery(query_number)
-        query = "EXPLAIN (ANALYSE, VERBOSE, FORMAT JSON) " + query
-        if query is None:
-            print("Please select a valid query number!")
-            return
-
-        for param in disable_parameters:
-            query = "SET LOCAL enable_" + str(param) + "= off;" + query
-        print(query)
 
         statements = sqlparse.split(query)
         formatted_query = sqlparse.format(statements[0], reindent=True)
@@ -79,6 +71,14 @@ def get_query_plan(query_number, disable_parameters=(), ):
         split_query = formatted_query.splitlines()
         # print(split_query)
 
+        query = "EXPLAIN (ANALYSE, VERBOSE, FORMAT JSON) " + query
+        if query is None:
+            print("Please select a valid query number!")
+            return
+
+        for param in disable_parameters:
+            query = "SET LOCAL enable_" + str(param) + "= off;" + query
+        print(query)
         cur.execute(query)
         rows = cur.fetchall()
         output_json = json.dumps(rows)

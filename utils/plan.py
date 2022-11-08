@@ -6,18 +6,22 @@ import utils.queries as queries
 
 
 nodeListOperations = []
-nodeListScans = []
+nodeListScans = {}
+rawNodeList = []
+nodeListJoins = []
+depth = 0
 
 
 class Node(object):
     def __repr__(self):
         return f"Node({self.node_type}, {self.relation_name}, {self.schema}, {self.alias}, {self.group_key}, {self.sort_key}, {self.join_type}" \
                f", {self.index_name},{self.hash_condition}, {self.table_filter}, {self.index_condition}, {self.merge_condition}" \
-               f", {self.recheck_condition}, {self.join_filter},{self.subplan_name}, {self.actual_rows}, {self.actual_time}, {self.description})"
+               f", {self.recheck_condition}, {self.join_filter},{self.subplan_name}, {self.actual_rows}, {self.actual_time}" \
+               f", {self.description},{self.cost},{self.sort_type})"
 
     def __init__(self, node_type, relation_name, schema, alias, group_key, sort_key, join_type, index_name,
                  hash_condition, table_filter, index_condition, merge_condition, recheck_condition, join_filter,
-                 subplan_name, actual_rows, actual_time, description):
+                 subplan_name, actual_rows, actual_time, description,cost,sort_type):
         self.node_type = node_type.upper()
         self.relation_name = relation_name
         self.schema = schema
@@ -36,6 +40,8 @@ class Node(object):
         self.actual_rows = actual_rows
         self.actual_time = actual_time
         self.description = description
+        self.cost = cost
+        self.sort_type =sort_type
         self.children = []
 
 
@@ -57,7 +63,7 @@ def get_query_plan(query_number, disable_parameters=(), ):
         # create a cursor
         cur = conn.cursor()
         query = queries.getQuery(query_number)
-        query = "EXPLAIN (VERBOSE, FORMAT JSON) " + query
+        query = "EXPLAIN (ANALYSE, VERBOSE, FORMAT JSON) " + query
         if query is None:
             print("Please select a valid query number!")
             return
@@ -92,7 +98,7 @@ def get_qep_tree(qep_json):
         parent_node = q_parent_plans.get()
 
         relation_name = schema = alias = group_key = sort_key = join_type = index_name = hash_condition = table_filter \
-            = index_condition = merge_condition = recheck_condition = join_filter = subplan_name = actual_rows = actual_time = description = None
+            = index_condition = merge_condition = recheck_condition = join_filter = subplan_name = actual_rows = actual_time = description = cost = sort_type=None
         if 'Relation Name' in current_plan:
             relation_name = current_plan['Relation Name']
         if 'Schema' in current_plan:
@@ -129,11 +135,15 @@ def get_qep_tree(qep_json):
                 subplan_name = name[name.index("$"):-1]
             else:
                 subplan_name = current_plan['Subplan Name']
+        if 'Total Cost' in current_plan:
+            cost = current_plan['Total Cost']
+        if 'Sort Space Type' in current_plan:
+            sort_type = current_plan['Sort Space Type']
 
         current_node = Node(current_plan['Node Type'], relation_name, schema, alias, group_key, sort_key, join_type,
                             index_name, hash_condition, table_filter, index_condition, merge_condition,
                             recheck_condition, join_filter,
-                            subplan_name, actual_rows, actual_time, description)
+                            subplan_name, actual_rows, actual_time, description,cost,sort_type)
 
         if parent_node is not None:
             parent_node.children.append(current_node)
@@ -150,25 +160,50 @@ def get_qep_tree(qep_json):
     return root_node
 
 
-def traverse_tree(node):
+def traverse_tree(node,depth):
     global nodeListOperations
+    global nodeListJoins
     global nodeListScans
+    global rawNodeList
+
+    for child in node.children:
+        traverse_tree(child,depth+1)
 
     if "SCAN" in str(node.node_type):
-        nodeListScans.append(node)
+        nodeListScans.update({node: depth})
+
+    elif "LOOP" in str(node.node_type) \
+            or "JOIN" in str(node.node_type) \
+            or str(node.node_type) == "HASH" \
+            or (str(node.node_type) == "SORT" and str(node.sort_type) == "Disk"):
+        nodeListJoins.append(node)
     else:
         nodeListOperations.append(node)
 
-    for child in node.children:
-        traverse_tree(child)
+    rawNodeList.append(node)
 
 
-def get_qep_nodes(query_number, disable=()):
+def get_qep_nodes_with_depth(query_number, disable=()):
     global nodeListOperations
     global nodeListScans
+    global rawNodeList
+    global nodeListJoins
     qep_json = json.loads(get_query_plan(query_number,disable))
     nodeListOperations.clear()
     nodeListScans.clear()
     root_node = get_qep_tree(qep_json)
-    traverse_tree(root_node)
-    return nodeListScans, nodeListOperations
+    traverse_tree(root_node,0)
+
+
+def get_qep_nodes(query_number,disable=()):
+    global nodeListOperations
+    global nodeListScans
+    global rawNodeList
+    global nodeListJoins
+    nodeListOperations = []
+    nodeListScans = {}
+    rawNodeList = []
+    nodeListJoins = []
+    get_qep_nodes_with_depth(query_number,disable)
+    sorted_scan = dict(sorted(nodeListScans.items(), key=lambda item: item[1],reverse=True))
+    return sorted_scan.keys(), nodeListJoins

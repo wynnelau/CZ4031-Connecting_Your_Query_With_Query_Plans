@@ -68,6 +68,7 @@ def get_query_plan(query_number, disable_parameters=(), ):
         formatted_query = sqlparse.format(statements[0], reindent=True)
         print()
         print(formatted_query)
+        print()
         split_query = formatted_query.splitlines()
         # print(split_query)
 

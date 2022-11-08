@@ -3,7 +3,7 @@ import psycopg2
 import json
 from utils.config import config
 import utils.queries as queries
-
+import sqlparse
 
 nodeListOperations = []
 nodeListScans = {}
@@ -71,6 +71,14 @@ def get_query_plan(query_number, disable_parameters=(), ):
         for param in disable_parameters:
             query = "SET LOCAL enable_" + str(param) + "= off;" + query
         print(query)
+
+        statements = sqlparse.split(query)
+        formatted_query = sqlparse.format(statements[0], reindent=True)
+        print()
+        print(formatted_query)
+        split_query = formatted_query.splitlines()
+        # print(split_query)
+
         cur.execute(query)
         rows = cur.fetchall()
         output_json = json.dumps(rows)

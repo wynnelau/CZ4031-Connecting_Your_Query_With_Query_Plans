@@ -48,7 +48,7 @@ class Node(object):
 
 
 
-def get_query_plan(query_number, disable_parameters=(), ):
+def get_query_plan(query_number, disable_parameters=(), splitted_ver=()):
     output_json = {}
     """ Connect to the PostgreSQL database server """
     conn = None
@@ -90,8 +90,10 @@ def get_query_plan(query_number, disable_parameters=(), ):
         if conn is not None:
             conn.close()
             print('Database connection closed.')
-
-    return output_json
+    if splitted_ver == True:
+        return split_query
+    else:    
+        return output_json
 
 
 def get_qep_tree(qep_json):

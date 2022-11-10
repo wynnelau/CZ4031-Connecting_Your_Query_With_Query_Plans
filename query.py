@@ -39,27 +39,29 @@ if __name__ == '__main__':
                 # print(node.node_type)
                 
                 for z in each_word:
-                    if z in str(node.hash_condition):
+                    if z in str(node.hash_condition) and "HASH JOIN" in node.node_type:
                         hash_join = True
                     else: 
                         hash_join = False
                     # print(hash_join, z, node.hash_condition)
-                    if z in str(node.merge_condition):
+                    if z in str(node.merge_condition) and "MERGE JOIN" in node.node_type:
                         merge_join = True
                     else: 
                         merge_join = False
                     # print(merge_join, z, node.merge_condition)
-                    if z in str(node.join_filter):
+                    if z in str(node.join_filter) and "NESTED LOOP" in node.node_type:
                         nested_loop = True
                     else: 
                         nested_loop = False
                     # print(nested_loop, z, node.join_filter)
                 if hash_join == True:
-                    print(each_row, "HASH JOIN")
+                    print(each_row, "       ", "HASH JOIN")
                 elif merge_join == True:
-                    print(each_row, "MERGE JOIN")
+                    print(each_row, "       ", "MERGE JOIN")
                 elif nested_loop == True:
-                    print(each_row, "NESTED LOOP")
+                    print(each_row, "       ", "NESTED LOOP")
+                else:
+                    print(each_row)
             
 
             # print(splitted_query.index(x))

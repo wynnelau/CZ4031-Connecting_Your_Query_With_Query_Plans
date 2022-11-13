@@ -2,60 +2,15 @@ from tkinter import *
 from tkinter import font, messagebox, ttk
 import psycopg2
 import json
+import annotation
+from utils.config import config
+
 import project
 
 # style=ttk.Style()
 # style.theme_use('clam')
 # style.configure("Vertical.TScrollbar", background="green", bordercolor="purple", arrowcolor="black")
 
-
-def get_json(inputValue):
-        
-        conn = None
-        x = None 
-        try:
-            #connect to postgres 
-            conn = psycopg2.connect(
-                host="localhost",
-                database="postgres",
-                user="postgres",
-                password="password")
-            
-            cur = conn.cursor()
-            cur.execute("EXPLAIN (ANALYZE, VERBOSE, FORMAT JSON)" + inputValue)
-            rows = cur.fetchall()
-            x = json.dumps(rows)
-
-            cur.close()
-        except (Exception, psycopg2.DatabaseError) as error:
-            messagebox.showerror("Error",error)
-         
-        finally:
-            if conn is not None:
-                conn.close()
-        print("success")
-        return x
-
-
-def connect():
-        conn = None
-        try:
-            params = conn
-
-            conn = psycopg2.connect(**params)
-
-            cur = conn.cursor()
-            cur.execute('SELECT version()')
-
-            db_version = cur.fetchone()
-
-            cur.close()
-        except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
-        finally:
-            if conn is not None:
-                conn.close()
-        cur = conn.cursor()
 
 def get_schemas(cur):
   schema_list = []
@@ -69,41 +24,14 @@ def get_schemas(cur):
 def get_schema(schema_name):
     schema_prompt = "You have selected the database: " + schema_name + "."
     messagebox.showinfo(title="Schema selected", message=schema_prompt)
-
-    conn = psycopg2.connect(
-                host="localhost",
-                database="postgres",
-                user="postgres",
-                password="password")
-            
+    params = config()
+    conn = psycopg2.connect(**params)
     cur = conn.cursor()
-
     schema_path = "SET search_path TO '" + schema_name + "';"
     cur.execute(schema_path)
 
 
-
-
-
-def format_query(Frame):
-    query = ["SELECT l_returnflag,", 
-            "       l_linestatus,",
-            "       sum(l_quantity) AS sum_qty,",
-            "       sum(l_extendedprice) AS sum_base_price,",
-            "       sum(l_extendedprice * (1 - l_discount)) AS sum_disc_price,",
-            "       sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,",
-            "       avg(l_quantity) AS avg_qty,",
-            "       avg(l_extendedprice) AS avg_price,",
-            "       avg(l_discount) AS avg_disc,",
-            "       count(*) AS count_order",
-            "FROM lineitem",
-            "WHERE l_shipdate <= date '1998-12-01' - interval '90' DAY",
-            "GROUP BY l_returnflag,",
-            "         l_linestatus",
-            "ORDER BY l_returnflag,",
-            "         l_linestatus;",
-            ]
-
+def format_query(Frame,query):
 
     for i in range(len(query)):
         colour = [ "Grey", "Pink"]
@@ -119,23 +47,7 @@ def format_query(Frame):
             
         
         
-def annotate(Frame):
-    annotation = [" ",
-                    " ",
-                    " ",
-                    " ",
-                    " ",
-                    " ",
-                    " ",
-                    " ",
-                    " ",
-                    " ",
-                    " ",
-                    "This table is read using sequential scan. This is because no index is created on the table. ",
-                    " ",
-                    " ",
-                    " ",
-                    " "]
+def annotate(Frame,annotation):
 
     for i in range(len(annotation)):
         colour = [ "Grey", "Pink"]

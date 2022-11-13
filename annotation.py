@@ -4,9 +4,7 @@ from algorithms.bitmapscan import bitmapscan
 from algorithms.indexscan import indexscan
 from utils import queries
 from utils.plan import get_mapping
-import itertools
-import json
-import utils.queries
+
 import sqlparse
 from algorithms.mergejoin import mergejoin
 from algorithms.hashjoin import hashjoin
@@ -15,19 +13,10 @@ from algorithms.nestedloopjoin import nestedloopjoin
 from algorithms.seqscan import seqscan
 
 
-PARAMS = {
-    'hashjoin': 'ON',
-    'mergejoin': 'ON',
-    'nestloop': 'ON',
-    'indexscan': 'ON',
-    'bitmapscan': 'ON',
-    'seqscan': 'ON',
-}
 
 
-def get_all_plans(query_number):
-    query = queries.getQuery(query_number)
-    statements = sqlparse.split(query)
+def get_annotations(query_input):
+    statements = sqlparse.split(query_input)
     formatted_query = sqlparse.format(statements[0], reindent=True, keyword_case='upper')
     split_query = formatted_query.splitlines()
     index = 0
@@ -35,33 +24,40 @@ def get_all_plans(query_number):
         print(index, line)
         index += 1
 
-    optimal = get_mapping(query_number)
+    optimal = get_mapping(query_input)
 
+    print("OPTIMAL" + str(optimal))
+
+    if optimal == "ERROR":
+        return
 
     # For the various joins
     print("Getting Nested Loop")
     disable = tuple(["hashjoin", "mergejoin", "indexscan", "bitmapscan"])
-    nestedloop_list = get_mapping(query_number, disable)
+    nestedloop_list = get_mapping(query_input, disable)
 
 
     print("Getting Hash Join")
     disable = tuple(["nestloop", "mergejoin", "indexscan", "bitmapscan"])
-    hashjoin_list = get_mapping(query_number, disable)
+    hashjoin_list = get_mapping(query_input, disable)
 
     print("Getting Merge Join")
     disable = tuple(["nestloop", "hashjoin", "indexscan", "bitmapscan"])
-    mergejoin_list = get_mapping(query_number, disable)
+    mergejoin_list = get_mapping(query_input, disable)
 
 
     print("Getting Index Join")
     disable = tuple(["nestloop", "mergejoin", "hashjoin"])
-    indexjoin_list = get_mapping(query_number, disable)
+    indexjoin_list = get_mapping(query_input, disable)
 
 
 
     optimal_dict = {}
+    print("OPTIMAL2" +  str(optimal))
     if optimal:
         for line_index in optimal:
+            print(line_index)
+            print(line_index)
             index = line_index["index"]
             operation = line_index['operation']
             nodes = line_index["nodes"]
@@ -156,7 +152,16 @@ def get_all_plans(query_number):
             annotation = indexscan(relation_name=optimal_dict[index][2],join_condition=optimal_dict[index][3])
             annotations.update({index: annotation})
 
-    print(annotations)
+    annotations_list = []
+    for i in range(len(split_query)):
+        annotations_list.append("")
+
+    for key in annotations.keys():
+        print(key)
+        annotations_list[key] = annotations[key]
+
+    print(annotations_list)
+    return split_query, annotations_list
 
 
 def getAnnotationsJoins(operation, index, operation_function, optimal_dict, nestedloop_dict, indexjoin_dict,
@@ -206,4 +211,5 @@ def getAnnotationsJoins(operation, index, operation_function, optimal_dict, nest
 
 
 if __name__ == '__main__':
-    mapping = get_all_plans(5)
+    query = queries.getQuery(5)
+    mapping = get_annotations(query)

@@ -3,24 +3,17 @@ import queue
 import psycopg2
 import json
 from utils.config import config
-import utils.queries as queries
 import sqlparse
 import re
+from tkinter import  messagebox
+from builtins import any
+
 
 nodeListOperations = []
 nodeListScans = {}
 rawNodeList = []
 nodeListJoins = []
 depth = 0
-
-PARAMS = {
-    'hashjoin': 'ON',
-    'mergejoin': 'ON',
-    'nestloop': 'ON',
-    'indexscan': 'ON',
-    'bitmapscan': 'ON',
-    'seqscan': 'ON',
-}
 
 
 class Node(object):
@@ -57,22 +50,14 @@ class Node(object):
         self.output = output
 
 
-def get_query_plan(query_number, disable_parameters=(), ):
+def get_query_plan(query, disable_parameters=()):
     output_json = {}
     """ Connect to the PostgreSQL database server """
     conn = None
     try:
-        # read connection parameters
         params = config()
-
-        # connect to the PostgreSQL server
-        # print('Connecting to the PostgreSQL database...')
         conn = psycopg2.connect(**params)
-
-        # create a cursor
         cur = conn.cursor()
-        query = queries.getQuery(query_number)
-
         query = "EXPLAIN (ANALYSE, VERBOSE, FORMAT JSON) " + query
         if query is None:
             print("Please select a valid query number!")
@@ -90,6 +75,8 @@ def get_query_plan(query_number, disable_parameters=(), ):
     except (Exception, psycopg2.DatabaseError) as error:
         if "timeout" in str(error):
             return {}
+        messagebox.showerror("Error", error)
+        return "ERROR"
     finally:
         if conn is not None:
             conn.close()
@@ -97,11 +84,9 @@ def get_query_plan(query_number, disable_parameters=(), ):
     return output_json
 
 
-def get_operations(query_number):
+def get_operations(query):
     sql_operators_main = ["SELECT", "FROM", "WHERE", 'GROUP BY', 'ORDER', 'JOIN']
     operation_list = []
-    query = queries.getQuery(query_number)
-
     # for nodes in rawNodeList:
     #     print(nodes)
 
@@ -210,23 +195,6 @@ def get_operations(query_number):
 
     print()
 
-    # # Check if there is A=B, B=C, A=C relation, weird relation
-    # for i in range(len(join_conditions_list)):
-    #     for j in range(i + 1, len(join_conditions_list)):
-    #         join_condition_i = join_conditions_list[i]
-    #         join_condition_j = join_conditions_list[j]
-    #         combined_list = join_condition_i + join_condition_j
-    #         combined_list2 = list(set(combined_list))
-    #         if (len(combined_list2) < 4):
-    #             common_condition = list(set(combined_list) - set(combined_list2))
-    #             join_condition_i_new = list(set(join_condition_i) - set(common_condition))
-    #             join_condition_j_new = list(set(join_condition_j) - set(common_condition))
-    #             join_condition_i_new.append(join_condition_j_new[0])
-    #             join_condition_j_new.append(join_condition_i_new[0])
-    #             join_conditions_list.append({i: join_condition_i})
-    #             join_conditions_list.append({j: join_condition_j})
-    #             continue
-
     getJoinMapping(join_conditions_list, join_indexes, split_query, operation_list)
     return operation_list
 
@@ -269,7 +237,6 @@ def get_mapping_mergejoin(i, join_conditions_list, join_indexes, split_query, op
                     if join_condition[0] in str(rawNodeList[j].sort_key) or join_condition[1] in str(
                             rawNodeList[j].sort_key):
                         sort_positions.append(j)
-
 
             list_nodes = []
             for sort_pos in sort_positions:
@@ -463,12 +430,13 @@ def traverse_tree(node, depth):
     rawNodeList.append(node)
 
 
-def get_qep_nodes_with_depth(query_number, disable=()):
+def get_qep_nodes_with_depth(query, disable=()):
+    print("reached herre 1 2 3")
     global nodeListOperations
     global nodeListScans
     global rawNodeList
     global nodeListJoins
-    raw_json = get_query_plan(query_number, disable)
+    raw_json = get_query_plan(query, disable)
     if raw_json == {}:
         return None
     qep_json = json.loads(raw_json)
@@ -478,7 +446,8 @@ def get_qep_nodes_with_depth(query_number, disable=()):
     traverse_tree(root_node, 0)
 
 
-def get_mapping(query_number, disable=()):
+def get_mapping(query, disable=()):
+    print("reached here")
     global nodeListOperations
     global nodeListScans
     global rawNodeList
@@ -487,10 +456,9 @@ def get_mapping(query_number, disable=()):
     nodeListScans = {}
     rawNodeList = []
     nodeListJoins = []
-    get_qep_nodes_with_depth(query_number, disable)
+    get_qep_nodes_with_depth(query, disable)
     sorted_scan = dict(sorted(nodeListScans.items(), key=lambda item: item[1], reverse=True))
-    # print(nodeListScans)
     if rawNodeList:
-        operation_list = get_operations(query_number)
+        operation_list = get_operations(query)
         return operation_list
     return None

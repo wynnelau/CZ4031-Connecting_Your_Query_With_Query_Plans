@@ -37,32 +37,6 @@ def get_json(input_query):
     mycanvas.configure(yscrollcommand=mscrollbar.set)
     mycanvas2.configure(yscrollcommand=mscrollbar2.set)
 
-    # frame2 = Frame(root, highlightbackground="black", highlightthickness=3, height=1500)
-    # frame2.grid(row=6, column=0, columnspan=2, sticky='new', padx=5)
-
-    # mycanvas = Canvas(frame2)
-    # mycanvas.pack(side=LEFT, fill=BOTH, expand=1)
-    # mycanvas.bind('<Configure>', lambda e: mycanvas.configure(scrollregion=mycanvas.bbox('all')))
-    # myframe = Frame(mycanvas)
-    # mycanvas.create_window((0, 0), window=myframe, anchor="nw")
-    # interface.format_query(myframe,formatted_query)
-    # frame3 = Frame(root, highlightbackground="black", highlightthickness=3, height=1500)
-    # frame3.grid(row=6, column=2, columnspan=2, sticky="new", padx=5)
-   
-
-    # mycanvas2 = Canvas(frame3)
-    # mycanvas2.pack(side=LEFT, fill=BOTH, expand=1)
-    # mycanvas2.bind('<Configure>', lambda e: mycanvas2.configure(scrollregion=mycanvas2.bbox('all')))
-    # myframe2 = Frame(mycanvas2)
-    # mycanvas2.create_window((0, 0), window=myframe2, anchor="nw")
-    # interface.annotate(myframe2,annotation_list)
-
-    # mscrollbar = ttk.Scrollbar(frame2, orient="vertical", command=multiple_yview)
-    # mscrollbar.pack(side=RIGHT, fill=Y)
-    # mycanvas.configure(yscrollcommand=mscrollbar.set)
-
-
-
 
 if __name__ == '__main__':
     # global annotations
@@ -107,7 +81,6 @@ if __name__ == '__main__':
     query_text.configure(yscrollcommand=query_scrollbar.set)
     query_scrollbar.grid(row=0, rowspan=3, column=0, sticky='ns')
 
-
     frame4 = Frame(root)
     frame4.grid(row=1, rowspan=2, column=3, columnspan=3)
 
@@ -115,28 +88,19 @@ if __name__ == '__main__':
     my_img = Label(frame4, image=img)
     my_img.grid(row=0, columnspan=2, padx=40)
 
-    # img2 = ImageTk.PhotoImage(Image.open("utils/bob.png").resize((100, 100)))
-    # my_img2 = Label(root, image=img2)
-    # my_img2.grid(row=1, column = 6, columnspan=3, padx=40)
-
-
     frame2 = Frame(root, highlightbackground="black", highlightthickness=3, height=1500)
     frame2.grid(row=6, column=0, columnspan=3, sticky='nsew', padx=5)
     mycanvas = Canvas(frame2)
-    #mycanvas.pack(side=LEFT, fill=BOTH, expand=1)
-    #mycanvas.bind('<Configure>', lambda e: mycanvas.configure(scrollregion=mycanvas.bbox('all')))
+     
     myframe = Frame(mycanvas)
     mycanvas.create_window((0, 0), window=myframe, anchor="nw")
-    #interface.format_query(myframe,formatted_query)
-    
+  
     frame3 = Frame(root, highlightbackground="black", highlightthickness=3, height=1500)
     frame3.grid(row=6,column=3, columnspan=3, sticky="nsew", padx=5)
     mycanvas2 = Canvas(frame3)
-    #mycanvas2.pack(side=LEFT, fill=BOTH, expand=1)
-    #mycanvas2.bind('<Configure>', lambda e: mycanvas2.configure(scrollregion=mycanvas2.bbox('all')))
+ 
     myframe2 = Frame(mycanvas2)
     mycanvas2.create_window((0, 0), window=myframe2, anchor="nw")
-    #interface.annotate(myframe2,annotation_list)
 
     mscrollbar = ttk.Scrollbar(frame2, orient="vertical", command=multiple_yview)
     mscrollbar.pack(side=RIGHT, fill=Y)
@@ -150,10 +114,7 @@ if __name__ == '__main__':
 
     annotated = Label(root, text="ANNOTATIONS")
     annotated.grid(row=5, column=3, columnspan=3)
-
-    # final = Label(root, text="-------------------------------")
-    # final.grid(row=10, column=0, columnspan=6)
-
+ 
     execute = Button(root, text="EXECUTE", command=lambda: get_json(retrieveInput()))
     execute.grid(row=4, column=1)
 

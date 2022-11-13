@@ -4,12 +4,7 @@ import psycopg2
 import json
 import annotation
 from utils.config import config
-
 import project
-
-# style=ttk.Style()
-# style.theme_use('clam')
-# style.configure("Vertical.TScrollbar", background="green", bordercolor="purple", arrowcolor="black")
 
 
 def get_schemas(cur):
@@ -18,8 +13,8 @@ def get_schemas(cur):
   schemas = cur.fetchall()
   for schema in schemas:
     schema_list.append(schema[0])
-  
   return schema_list
+
 
 def get_schema(schema_name):
     schema_prompt = "You have selected the database: " + schema_name + "."
@@ -32,7 +27,6 @@ def get_schema(schema_name):
 
 
 def format_query(Frame,query):
-
     for i in range(len(query)):
         colour = [ "Grey", "Pink"]
         x = i%2
@@ -45,10 +39,8 @@ def format_query(Frame,query):
         text.configure(yscrollcommand=scrollbar.set)
         text.config(state=DISABLED)
             
-        
-        
+            
 def annotate(Frame,annotation):
-
     for i in range(len(annotation)):
         colour = [ "Grey", "Pink"]
         x = i%2

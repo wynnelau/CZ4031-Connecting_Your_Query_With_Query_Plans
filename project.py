@@ -83,6 +83,10 @@ if __name__ == '__main__':
     my_img = Label(frame4, image=img)
     my_img.grid(row=0, columnspan=3, padx=40)
 
+    img2 = ImageTk.PhotoImage(Image.open("utils/bob.png").resize((100, 200)))
+    my_img2 = Label(root, image=img2)
+    my_img2.grid(row=1, column = 6, columnspan=3, padx=40)
+
     # query_label2 = Label(root, text = "ENTER QUERY HERE")
     # query_label2.grid(row=0, column=3, columnspan =3 )
 

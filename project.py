@@ -95,12 +95,12 @@ if __name__ == '__main__':
     style.configure("Vertical.TScrollbar", background="green", bordercolor="purple", arrowcolor="black")
 
     frame1 = LabelFrame(root, highlightbackground="black", highlightthickness=3)
-    frame1.grid(row=1, rowspan=3, column = 0, columnspan=3)
+    frame1.grid(row=1, rowspan=3, column = 0, columnspan=3, padx=5)
 
     query_label = Label(root, text="ENTER QUERY HERE")
     query_label.grid(row=0, column=0, columnspan=3)
 
-    query_text = Text(frame1, height=15, width=90)
+    query_text = Text(frame1, height=15, width=55)
     query_text.grid(row=0, column=1)
 
     query_scrollbar = ttk.Scrollbar(frame1, orient='vertical', command=query_text.yview)
@@ -111,17 +111,17 @@ if __name__ == '__main__':
     frame4 = Frame(root)
     frame4.grid(row=1, rowspan=2, column=3, columnspan=3)
 
-    img = ImageTk.PhotoImage(Image.open("utils/sponge.png").resize((600, 200)))
+    img = ImageTk.PhotoImage(Image.open("utils/sponge.png").resize((700, 200)))
     my_img = Label(frame4, image=img)
     my_img.grid(row=0, columnspan=2, padx=40)
 
-    img2 = ImageTk.PhotoImage(Image.open("utils/bob.png").resize((100, 100)))
-    my_img2 = Label(root, image=img2)
-    my_img2.grid(row=1, column = 6, columnspan=3, padx=40)
+    # img2 = ImageTk.PhotoImage(Image.open("utils/bob.png").resize((100, 100)))
+    # my_img2 = Label(root, image=img2)
+    # my_img2.grid(row=1, column = 6, columnspan=3, padx=40)
 
 
     frame2 = Frame(root, highlightbackground="black", highlightthickness=3, height=1500)
-    frame2.grid(row=6, column=0, columnspan=3, sticky='new', padx=5)
+    frame2.grid(row=6, column=0, columnspan=3, sticky='nsew', padx=5)
     mycanvas = Canvas(frame2)
     #mycanvas.pack(side=LEFT, fill=BOTH, expand=1)
     #mycanvas.bind('<Configure>', lambda e: mycanvas.configure(scrollregion=mycanvas.bbox('all')))
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     #interface.format_query(myframe,formatted_query)
     
     frame3 = Frame(root, highlightbackground="black", highlightthickness=3, height=1500)
-    frame3.grid(row=6,column=3, columnspan=3, sticky="new", padx=5)
+    frame3.grid(row=6,column=3, columnspan=3, sticky="nsew", padx=5)
     mycanvas2 = Canvas(frame3)
     #mycanvas2.pack(side=LEFT, fill=BOTH, expand=1)
     #mycanvas2.bind('<Configure>', lambda e: mycanvas2.configure(scrollregion=mycanvas2.bbox('all')))

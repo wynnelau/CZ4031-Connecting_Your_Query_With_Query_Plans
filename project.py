@@ -37,7 +37,7 @@ if __name__ == '__main__':
     root = Tk()
     root.title('Query Panel Annotator')
     root.iconphoto(False, PhotoImage(file='utils/bob.png'))
-    root.geometry('1350x600')
+    root.geometry('800x600')
 
     database = Menu(root)
     root.config(menu=database)
@@ -61,12 +61,12 @@ if __name__ == '__main__':
     style.configure("Vertical.TScrollbar", background="green", bordercolor="purple", arrowcolor="black")
 
     frame1 = LabelFrame(root, highlightbackground="black", highlightthickness=3)
-    frame1.grid(row=1, rowspan=3, columnspan=3)
+    frame1.grid(row=1, rowspan=3, column = 0, columnspan=2)
 
     query_label = Label(root, text="ENTER QUERY HERE")
-    query_label.grid(row=0, column=0, columnspan=3)
+    query_label.grid(row=0, column=0, columnspan=2)
 
-    query_text = Text(frame1, height=15, width=90)
+    query_text = Text(frame1, height=15, width=50)
     query_text.grid(row=0, column=1)
 
     query_scrollbar = ttk.Scrollbar(frame1, orient='vertical', command=query_text.yview)
@@ -74,16 +74,16 @@ if __name__ == '__main__':
     query_scrollbar.grid(row=0, rowspan=3, column=0, sticky='ns')
 
     execute = Button(root, text="EXECUTE", command=lambda: get_json(retrieveInput()))
-    execute.grid(row=4, column=2)
+    execute.grid(row=4, column=1)
 
     frame4 = Frame(root)
-    frame4.grid(row=1, rowspan=2, column=3, columnspan=2)
+    frame4.grid(row=1, rowspan=2, column=2, columnspan=2)
 
-    img = ImageTk.PhotoImage(Image.open("utils/sponge.png").resize((600, 200)))
+    img = ImageTk.PhotoImage(Image.open("utils/sponge.png").resize((300, 200)))
     my_img = Label(frame4, image=img)
-    my_img.grid(row=0, columnspan=3, padx=40)
+    my_img.grid(row=0, columnspan=2, padx=40)
 
-    img2 = ImageTk.PhotoImage(Image.open("utils/bob.png").resize((100, 200)))
+    img2 = ImageTk.PhotoImage(Image.open("utils/bob.png").resize((100, 100)))
     my_img2 = Label(root, image=img2)
     my_img2.grid(row=1, column = 6, columnspan=3, padx=40)
 
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     # query_scrollbar2.grid(row=0, rowspan = 3, column=3, sticky='ns')
 
     frame2 = Frame(root, highlightbackground="black", highlightthickness=3, height=1500)
-    frame2.grid(row=6, column=0, columnspan=3, sticky='new', padx=5)
+    frame2.grid(row=6, column=0, columnspan=2, sticky='new', padx=5)
 
     mycanvas = Canvas(frame2)
     mycanvas.pack(side=LEFT, fill=BOTH, expand=1)
@@ -114,7 +114,7 @@ if __name__ == '__main__':
     interface.format_query(myframe,formatted_query)
 
     frame3 = Frame(root, highlightbackground="black", highlightthickness=3, height=1500)
-    frame3.grid(row=6, column=3, columnspan=3, sticky="new", padx=5)
+    frame3.grid(row=6, column=2, columnspan=2, sticky="new", padx=5)
     # frame3.grid_propagate(True)
 
     mycanvas2 = Canvas(frame3)
@@ -151,12 +151,12 @@ if __name__ == '__main__':
     # query_scrollbar2.grid(row=6, rowspan = 3, column=3, sticky='ns', padx=(0, 12))
 
     query_formatted = Label(root, text="FORMATTED QUERY")
-    query_formatted.grid(row=5, column=0, columnspan=3)
+    query_formatted.grid(row=5, column=0, columnspan=2)
 
     annotated = Label(root, text="ANNOTATIONS")
-    annotated.grid(row=5, column=3, columnspan=3)
+    annotated.grid(row=5, column=2, columnspan=2)
 
     final = Label(root, text="-------------------------------")
-    final.grid(row=8, column=0, columnspan=6)
+    final.grid(row=8, column=0, columnspan=5)
 
     root.mainloop()

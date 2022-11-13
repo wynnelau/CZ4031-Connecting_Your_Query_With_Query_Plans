@@ -36,9 +36,9 @@ def format_query(Frame,query):
     for i in range(len(query)):
         colour = [ "Grey", "Pink"]
         x = i%2
-        text_font = font.Font(family='Fira Code Retina', size=15)
-        text = Text(Frame,height=1, font=text_font, wrap=WORD, highlightbackground= colour[x], highlightthickness = 2)
-        text.grid(row=i, column=1)
+        text_font = font.Font(family='Fira Code Retina', size=12)
+        text = Text(Frame,height=3, font=text_font, wrap=WORD, highlightbackground= colour[x], highlightthickness = 2)
+        text.grid(row=i, column=1, columnspan =1)
         text.insert(INSERT, query[i])
         scrollbar = ttk.Scrollbar(Frame, orient='vertical', command=text.yview)
         scrollbar.grid(row=i, column=0, sticky='ns')
@@ -52,9 +52,9 @@ def annotate(Frame,annotation):
     for i in range(len(annotation)):
         colour = [ "Grey", "Pink"]
         x = i%2
-        text_font = font.Font(family='Fira Code Retina', size=15)
-        text = Text(Frame,height=1, font=text_font, wrap=WORD, highlightbackground= colour[x], highlightthickness = 2)
-        text.grid(row=i, column=1, columnspan = 3)
+        text_font = font.Font(family='Fira Code Retina', size=12)
+        text = Text(Frame,height=3, font=text_font, wrap=WORD, highlightbackground= colour[x], highlightthickness = 2)
+        text.grid(row=i, column=1, columnspan = 1)
         text.insert(INSERT, annotation[i])
         scrollbar = ttk.Scrollbar(Frame, orient='vertical', command=text.yview)
         scrollbar.grid(row=i, column=0, sticky='ns')

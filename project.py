@@ -37,7 +37,7 @@ if __name__ == '__main__':
     root = Tk()
     root.title('Query Panel Annotator')
     root.iconphoto(False, PhotoImage(file='utils/bob.png'))
-    root.geometry("")
+    root.geometry('1350x600')
 
     database = Menu(root)
     root.config(menu=database)

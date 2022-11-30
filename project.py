@@ -24,7 +24,7 @@ def get_json(input_query):
     print("REACHED GET_JSON")
     global formatted_query
     global annotation_list
-    formatted_query, annotation_list = annotation.get_annotations(input_query)
+    formatted_query, annotation_list = annotation.get_annotations(input_query.lower())
     print(formatted_query)
     interface.format_query(myframe,formatted_query)
     print("REACHED GET_JSON")

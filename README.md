@@ -7,6 +7,8 @@ SQLink was built as part of the coursework for CZ4032: Database Systems Principl
 In this project, the broad goal is to integrate by retrieving relevant information from a QEP and AQP to annotate the corresponding SQL query to explain how different components of the query are executed by the underlying query processor and why the operators are chosen among other alternatives. In SQLink, we implemented this idea by annotating at each line  why each operator was chosen. The achience this, it is important to retrieve representative AQPs associated with a SQL query. 
 
 The TPC-H database was used for querying purposes.
+
+This project was exectued with the help of 4 other team members: Vincent, Jerome, Wynne and Ruo Qing.
  
 ## Running the app
 

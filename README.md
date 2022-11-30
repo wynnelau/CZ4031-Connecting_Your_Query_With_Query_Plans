@@ -13,7 +13,7 @@ The TPC-H database was used for querying purposes.
 
 * Change the host, database, user and password in the database.ini file according to the
 user's setup.
-* Create the tables and import data for each table in PostgreSQL database (pgAdmin4)
+* Create the tables and import data for each table in PostgreSQL database (pgAdmin4): You can choose to use the TPC-H Database, the details in downloading the TPC-H data is given below.
 
 * Step 1: Click the run button for project.py.
 * Step 2: Input the query in the ‘ENTER QUERY HERE’ box. Please take note that the SQL

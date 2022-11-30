@@ -2,7 +2,7 @@
 
 SQLink, links a SQL query to its Query Execution Plan (QEP) and Alternate Query Plans (AQPs), and explains why a certain join/scan algorithm was used in the final query plan. 
 
-SQLink was built as part of the coursework for CZ4032: Database Systems Principles and is built on Python and PostgreSQL, and is optimized for usage on Windows machines. 
+SQLink was built as part of the coursework for CZ4031: Database Systems Principles and is built on Python and PostgreSQL, and is optimized for usage on Windows machines. 
 
 In this project, the broad goal is to integrate by retrieving relevant information from a QEP and AQP to annotate the corresponding SQL query to explain how different components of the query are executed by the underlying query processor and why the operators are chosen among other alternatives. In SQLink, we implemented this idea by annotating at each line  why each operator was chosen. The achience this, it is important to retrieve representative AQPs associated with a SQL query. 
 

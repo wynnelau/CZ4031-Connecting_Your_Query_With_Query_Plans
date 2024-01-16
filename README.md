@@ -1,4 +1,4 @@
-## Connecting Your Query With Query Plans
+## CZ4031-Connecting_Your_Query_With_Query_Plans
 Group project done in Year 3 Sem 1
 
 • Integrated an SQL query and its query plan-related information by efficiently retrieving relevant information from a QEP and AQPs using Python to explain how different components of the query are executed by the underlying query processor and why the operators are chosen among other alternatives.  
